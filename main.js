@@ -1,56 +1,51 @@
-// String Manipulation Functions
+// Function to update total price based on quantity and deleted items
+function updateTotal() {
+    let total = 0;
+    const items = document.querySelectorAll('.cart-item');
 
-function reverseString(str) {
-    return str.split('').reverse().join('');
+    items.forEach(item => {
+        const price = parseFloat(item.querySelector('.item-price').textContent.replace('$', ''));
+        const quantity = parseInt(item.querySelector('.quantity-input').value);
+        total += price * quantity;
+    });
+
+    document.querySelector('#total-price').textContent = `$${total.toFixed(2)}`;
 }
 
-function countCharacters(str) {
-    return str.length;
-}
+// Add event listeners to the plus and minus buttons to adjust quantity
+document.querySelectorAll('.quantity-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const input = this.parentElement.querySelector('.quantity-input');
+        let quantity = parseInt(input.value);
 
-function capitalizeWords(sentence) {
-    return sentence.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-}
+        if (this.classList.contains('plus')) {
+            quantity++;
+        } else if (this.classList.contains('minus')) {
+            if (quantity > 1) {
+                quantity--;
+            }
+        }
 
+        input.value = quantity;
+        updateTotal();
+    });
+});
 
-// Array Functions
+// Add event listeners to delete buttons to remove items from the cart
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        this.parentElement.parentElement.remove(); // Removes the item from the DOM
+        updateTotal(); // Update total after removing item
+    });
+});
 
-function findMax(arr) {
-    return Math.max(...arr);
-}
+// Add event listeners to heart buttons to like/unlike items
+document.querySelectorAll('.heart-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        this.classList.toggle('liked'); // Toggle liked class to change heart color
+    });
+});
 
-function findMin(arr) {
-    return Math.min(...arr);
-}
+// Initialize the total price on page load
+updateTotal();
 
-function sumArray(arr) {
-    return arr.reduce((acc, curr) => acc + curr, 0);
-}
-
-function filterArray(arr, condition) {
-    return arr.filter(condition);
-}
-
-
-// Mathematical Functions
-
-function factorial(n) {
-    if (n === 0 || n === 1) return 1;
-    return n * factorial(n - 1);
-}
-
-function isPrime(num) {
-    if (num <= 1) return false;
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) return false;
-    }
-    return true;
-}
-
-function fibonacci(n) {
-    let fib = [0, 1];
-    for (let i = 2; i < n; i++) {
-        fib[i] = fib[i - 1] + fib[i - 2];
-    }
-    return fib.slice(0, n);
-}
